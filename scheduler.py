@@ -28,16 +28,16 @@ class HostAvailability:
         pass
     
 """
-                    <time>
-                        <hour>21</hour>
-                        <minute>13</minute>
-                    </time>
-                    <date>
-                        <year>2014</year>
-                        <month>1</month>
-                        <day>16</day>
-                    </date>
-                    <availability>1.000000</availability>    
+<time>
+    <hour>21</hour>
+    <minute>13</minute>
+</time>
+<date>
+    <year>2014</year>
+    <month>1</month>
+    <day>16</day>
+</date>
+<availability>1.000000</availability>    
 """
     
 #useful constants
@@ -61,10 +61,9 @@ for platform in xsInput.project.shared_mem.platforms.platform:
 """
 #Results
 
-"""
 wuResults = list()
 nWUResults = len(xsInput.project.shared_mem.wu_results.wu_result)
-
+totalWorkAvailable = 0
 print "Work units:"
 for wuResult in xsInput.project.shared_mem.wu_results.wu_result:
     
@@ -75,15 +74,18 @@ for wuResult in xsInput.project.shared_mem.wu_results.wu_result:
     wuR.workunit.id = wuResult.workunit.id
     wuR.workunit.name = wuResult.workunit.name
     wuR.workunit.estFpops = wuResult.workunit.rsc_fpops_est
+    totalWorkAvailable += wuResult.workunit.rsc_fpops_est
     wuResults.append(wuR)
     
-for wuResult in wuResults:    
-    print "R Id: ", wuResult.id
-    print "State: ", wuResult.state
-    print "WU Id:", wuResult.workunit.id
-    print "Name: ", wuResult.workunit.name
-    print "Fpops: ", wuResult.workunit.estFpops
-"""
+print "Is there work available: ", "Yes" if (totalWorkAvailable > 0 ) else "No"
+    
+#for wuResult in wuResults:    
+#    print "R Id: ", wuResult.id
+#    print "State: ", wuResult.state
+#    print "WU Id:", wuResult.workunit.id
+#    print "Name: ", wuResult.workunit.name
+#    print "Fpops: ", wuResult.workunit.estFpops
+
 
 """
 #Requests
