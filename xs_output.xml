@@ -1,0 +1,17 @@
+<xs_output>
+	<assignment>
+		<host_id>3</host_id>
+		<wu_id>2</wu_id>
+		<result_id>5</result_id>
+	</assignment>
+    <assignment>
+            <host_id>13</host_id>
+            <wu_id>17</wu_id>
+            <result_id>118</result_id>
+    </assignment>
+    <assignment>
+            <host_id>13</host_id>
+            <wu_id>17</wu_id>
+            <result_id>117</result_id>
+    </assignment>
+</xs_output>
