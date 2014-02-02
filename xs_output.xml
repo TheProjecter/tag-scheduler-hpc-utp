@@ -1,17 +1,1 @@
-<xs_output>
-  <assignment>
-    <host_id>1</host_id>
-    <wu_id>5</wu_id>
-    <result_id>38</result_id>
-  </assignment>
-  <assignment>
-    <host_id>1</host_id>
-    <wu_id>5</wu_id>
-    <result_id>38</result_id>
-  </assignment>
-  <assignment>
-    <host_id>1</host_id>
-    <wu_id>5</wu_id>
-    <result_id>38</result_id>
-  </assignment>
-</xs_output>
+<xs_output><xs_output/>
