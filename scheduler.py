@@ -323,10 +323,10 @@ def writeSchedulerOutput(filename, assignments):
         outFile.write(etree.tostring(root, pretty_print=True))
     else:
         outFile.write("<xs_output>")
-        outFile.write("<xs_output/>")
+        outFile.write("</xs_output>")
             
     outFile.close()
-    print(etree.tostring(root, pretty_print=True))
+    #print(etree.tostring(root, pretty_print=True))
     
     return
 
@@ -425,6 +425,8 @@ def main():
     assignments = scheduleWork(wuResults, requests)
     writeSchedulerOutput(outFile, assignments)
     logAssignments(assignmentlogFile, assignments)
+    
+    sys.exit()
 
 #Program execution call. 
 main()
