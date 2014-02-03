@@ -12,12 +12,40 @@ Use round robin, FIFO scheme.
 ref: http://lxml.de/objectify.html
 """
 #from objectifiedJson import objectJSONEncoder
+import sys
+import json
+import datetime
 from lxml import objectify
 from lxml import etree
 
 """
 Data structures definitions
 """
+
+#WORK ON CONSOLE
+#OUTPUT ASSIGNMENTS TO A FILE IN /var/www/....
+
+def usage():
+    
+    print """
+    TAG thermal scheduler"    
+    Usage:
+        
+    scheduler.py [inputFile outputFile]
+    
+        - inputFile: name of input file with XSM data (xs_input.xml if not provided)
+        - outputFile: name of output file created by scheduler with work assignments (xs_output.xml if not provided)
+    """
+    
+    return
+
+def loadConfiguration():
+    configFile = "config.json"
+    f = open(configFile, 'r')
+
+    configString = f.read()
+    config = json.loads(configString)
+    return config
 
 #Holds details of workunit entities from BOINC
 class Workunit:
@@ -95,9 +123,10 @@ class HostAvailability:
 
 #Holds details of a work assignment done by the scheduler for a particular host
 class Assignment:
-    def __init__(self, hostId, wuId, resultId):
+    def __init__(self, hostId, wuId, wuName, resultId):
         self.hostId = hostId
         self.wuId = wuId
+        self.wuName = wuName
         self.resultId = resultId
         
     def __repr__(self):
@@ -108,6 +137,8 @@ Useful constatns
 """
 WR_STATE_EMPTY = -1
 WR_STATE_PRESENT = -2
+
+
 
 """
 Functions.Methods.Actions
@@ -242,7 +273,7 @@ def roundRobin(wuResults, requests):
                         
             if (request.workAssigned + (wuResult.workunit.fpops/request.host.fpops)) <= request.workRequested:    
                             
-                assignment = Assignment(request.host.id, wuResult.workunit.id, wuResult.id)
+                assignment = Assignment(request.host.id, wuResult.workunit.id, wuResult.workunit.name, wuResult.id)
                 assignments.append(assignment)
                 print assignment
                 request.workAssigned += wuResult.workunit.fpops/request.host.fpops
@@ -260,7 +291,7 @@ def roundRobin(wuResults, requests):
     
     print "Work assignments:"
     for request in requests:
-        print "[HOST: ", request.host.id, "] [WORK ASSIGNED: ", request.workAssigned, "]"
+        print "[HOST: ", request.host.id, "] [WORK ASSIGNED: ", request.workAssigned, "]"  
     
     return assignments
     
@@ -293,7 +324,72 @@ def writeSchedulerOutput(filename, assignments):
     print(etree.tostring(root, pretty_print=True))
     
     return
+
+"""
+    def __init__(self, hostId, wuId, wuName, resultId):
+        self.hostId = hostId
+        self.wuId = wuId
+        self.wuName = wuName
+        self.resultId = resultId
+"""
+
+"""
+    n = len(assignments)
+    i = 0
     
+    log = '{'
+    
+    for assignment in assignments:
+        log += '"assignment": {'
+        
+        log += '"hostId":' + '"' + str(assignment.hostId) + '"' + ','
+        log += '"wuId":' + '"' + str(assignment.wuId) + '"' + ','
+        log += '"wuName":' + '"' + str(assignment.wuName) + '"' + ','
+        log += '"resultId":' + '"' + str(assignment.resultId) + '"' + ','
+        log += '"year":' + '"' + str(date.year) + '"' + ','
+        log += '"month":' + '"' + str(date.month) + '"' + ','
+        log += '"day":' + '"' + str(date.day) + '"' + ','
+        log += '"hour":' + '"' + str(date.hour) + '"' + ','
+        log += '"minute":' + '"' + str(date.minute) + '"' + ','
+        log += '"second":' + '"' + str(date.second) + '"' 
+        
+        log += '}'
+        
+        i += 1
+        
+        if i == n:
+            pass
+        else:
+            log += ','
+        
+    log += '}'
+    
+    f.write(log)
+    
+    """
+
+def logAssignments(logFileName, assignments):
+    
+    f = open(logFileName, 'a')
+    date = datetime.datetime.now()
+    
+    for assignment in assignments:
+        log =  str(assignment.hostId) + " "
+        log += str(assignment.wuId) + " "
+        log += str(assignment.wuName) + " "
+        log += str(assignment.resultId) + " "
+        log += str(date.year) + " "
+        log += str(date.month) + " "
+        log += str(date.day) + " "
+        log += str(date.hour) + " "
+        log += str(date.minute) + " "
+        log += str(date.second) + "\n"
+        
+        f.write(log)
+        
+    f.close()
+    
+    return
 
 #Program's entry point
 def main():
@@ -301,12 +397,28 @@ def main():
     """
     TODO: file input and output as parameters
     """    
+    argsc = len(sys.argv)
     
-    xsInput = readSchedulerInput("xs_input.xml")
+    #if this is not running from a console and parameters have not been set.
+    if argsc != 3 and argsc != 1:
+        usage()
+        sys.exit(1)
+    
+    if argsc == 1:
+        inFile = "xs_input.xml"
+        outFile = "xs_output.xml"
+    else:
+        inFile = sys.argv[1]
+        outFile = sys.argv[2]
+        
+    config = loadConfiguration()
+        
+    xsInput = readSchedulerInput(inFile)
     wuResults = readWorkunitResults(xsInput)
     requests = readRequests(xsInput)
     assignments = scheduleWork(wuResults, requests)
-    writeSchedulerOutput("xs_output.xml", assignments)
+    writeSchedulerOutput(outFile, assignments)
+    logAssignments(config["assignmentLog"], assignments)
 
 #Program execution call. 
 main()
