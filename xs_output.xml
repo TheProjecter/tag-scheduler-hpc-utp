@@ -1,1 +1,42 @@
-<xs_output><xs_output/>
+<xs_output>
+  <assignment>
+    <host_id>4</host_id>
+    <wu_id>4</wu_id>
+    <result_id>25</result_id>
+  </assignment>
+  <assignment>
+    <host_id>3</host_id>
+    <wu_id>4</wu_id>
+    <result_id>26</result_id>
+  </assignment>
+  <assignment>
+    <host_id>5</host_id>
+    <wu_id>5</wu_id>
+    <result_id>27</result_id>
+  </assignment>
+  <assignment>
+    <host_id>4</host_id>
+    <wu_id>5</wu_id>
+    <result_id>28</result_id>
+  </assignment>
+  <assignment>
+    <host_id>3</host_id>
+    <wu_id>5</wu_id>
+    <result_id>29</result_id>
+  </assignment>
+  <assignment>
+    <host_id>5</host_id>
+    <wu_id>5</wu_id>
+    <result_id>30</result_id>
+  </assignment>
+  <assignment>
+    <host_id>4</host_id>
+    <wu_id>5</wu_id>
+    <result_id>31</result_id>
+  </assignment>
+  <assignment>
+    <host_id>3</host_id>
+    <wu_id>5</wu_id>
+    <result_id>32</result_id>
+  </assignment>
+</xs_output>
