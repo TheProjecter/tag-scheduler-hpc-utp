@@ -18,6 +18,19 @@ import datetime
 from lxml import objectify
 from lxml import etree
 
+#TODO: reliability markup... where do we set it?
+#limit output to 30 records for thermal reader
+
+"""
+Useful constatns
+"""
+WR_STATE_EMPTY = -1
+WR_STATE_PRESENT = -2
+#Assumming thermal records made available account for the past 30 minutes, we want
+#hosts that have been available for at least 20min out of those 30min
+RELIABILITY_THRESHOLD = 67
+
+
 """
 Data structures definitions
 """
@@ -133,14 +146,6 @@ class Assignment:
         return '{}: H{} WU{} R{}'.format(self.__class__.__name__, self.hostId, self.wuId, self.resultId)        
             
 """
-Useful constatns
-"""
-WR_STATE_EMPTY = -1
-WR_STATE_PRESENT = -2
-
-
-
-"""
 Functions.Methods.Actions
 """
 
@@ -226,7 +231,7 @@ def computeHostReliability(availabilityRecords):
         if availabilityRecord.availability == 1:
             availableCount += 1
             
-    reliability = float(availableCount)/float(len(availabilityRecords))
+    reliability = float(availableCount)/float(len(availabilityRecords)) * 100
     
     print "Count, Reliability, Total: ", availableCount, reliability, len(availabilityRecords)
     
@@ -249,7 +254,7 @@ def scheduleWork(wuResults, requests):
     requestForWork = list()
     
     for request in requests:
-        if request.workRequested > 0:
+        if request.workRequested > 0 and request.host.reliability > RELIABILITY_THRESHOLD:
             requestForWork.append(request)
     
     if len(requestForWork) == 0:
@@ -412,7 +417,7 @@ def main():
         outFile = sys.argv[2]
         
     #config = loadConfiguration()
-    assignmentlogFile = "/var/www/tag/assignments.log" 
+    assignmentlogFile = "assignments.log" 
         
     xsInput = readSchedulerInput(inFile)
     wuResults = readWorkunitResults(xsInput)
