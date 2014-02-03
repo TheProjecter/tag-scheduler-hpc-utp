@@ -411,14 +411,15 @@ def main():
         inFile = sys.argv[1]
         outFile = sys.argv[2]
         
-    config = loadConfiguration()
+    #config = loadConfiguration()
+    assignmentlogFile = "/var/www/tag/assignments.log" 
         
     xsInput = readSchedulerInput(inFile)
     wuResults = readWorkunitResults(xsInput)
     requests = readRequests(xsInput)
     assignments = scheduleWork(wuResults, requests)
     writeSchedulerOutput(outFile, assignments)
-    logAssignments(config["assignmentLog"], assignments)
+    logAssignments(assignmentlogFile, assignments)
 
 #Program execution call. 
 main()
